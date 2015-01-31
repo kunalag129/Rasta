@@ -30,6 +30,7 @@ public class MapsActivity extends FragmentActivity implements LocationListener{
     private TextView longitudeField;
     private LocationManager locationManager;
     private String provider;
+    private Marker loc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,8 @@ public class MapsActivity extends FragmentActivity implements LocationListener{
         if (mMap != null) {
             mMap.setMyLocationEnabled(true);
         }
+
+        loc = mMap.addMarker(new MarkerOptions().position(myLocation).title("Holy Shit!"));
 //        Marker hamburg = mMap.addMarker(new MarkerOptions().position(HAMBURG)
 //                .title("Hamburg"));
 //        Marker kiel = mMap.addMarker(new MarkerOptions()
@@ -82,12 +85,19 @@ public class MapsActivity extends FragmentActivity implements LocationListener{
 
     @Override
     public void onLocationChanged(Location location) {
-        int lat = (int) (location.getLatitude());
-        int lng = (int) (location.getLongitude());
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
         latituteField.setText(String.valueOf(lat));
         longitudeField.setText(String.valueOf(lng));
         myLocation = new LatLng(lat,lng);
         updateLocation();
+    }
+
+    public void updateLocation()
+    {
+        loc.setPosition(myLocation);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLocation));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
     }
 
     /**
